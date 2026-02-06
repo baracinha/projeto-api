@@ -1,5 +1,3 @@
-
-
 const form = document.getElementById('signinform');
 
 if (form)  {
@@ -82,6 +80,7 @@ if (logoutButton) {
 }
 
 const listaUtilizadoresDiv = document.getElementById('lista_utilizadores');
+
 if (listaUtilizadoresDiv) {
     fetch('http://localhost:8080/lista')
         .then(response => response.json())
@@ -95,4 +94,68 @@ if (listaUtilizadoresDiv) {
         .catch(error => {
             console.error('Erro ao obter a lista de utilizadores:', error);
         });
+}
+
+const listaPedidosDiv = document.getElementById('pedidos');
+const usernamesim = localStorage.getItem('nomeUser');
+if(listaPedidosDiv) {
+    const nome = encodeURIComponent(localStorage.getItem('nomeUser'));
+    const usernamedysplay = document.getElementById('useradicionante');
+    fetch('http://localhost:8080/listapedidos?adicionado=' + nome)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(pedido => {
+                const pedidoDiv = document.createElement('div');
+                pedidoDiv.className = 'dummypedido';
+                pedidoDiv.textContent = `asdasd:${pedido.remetente}`;
+                listaPedidosDiv.appendChild(pedidoDiv);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao obter a lista de pedidos:', error);
+        });
+    }
+
+const pedidoForm = document.getElementById('frm_pedidos');
+if (pedidoForm) {
+    pedidoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const idadicionado = document.getElementById('adicionado').value;
+        const idadicionante = localStorage.getItem('nomeUser');
+
+        try {
+            const response_idadicionante = await fetch('http://localhost:8080/idadicionante', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idadicionante })
+            });
+            const response_idadicionado = await fetch('http://localhost:8080/idadicionado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idadicionado })
+            });
+            const data_idadicionante = await response_idadicionante.json();
+            const data_idadicionado = await response_idadicionado.json();
+            const response_pedido = await fetch('http://localhost:8080/pedido', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idadicionante: data_idadicionante.id, idadicionado: data_idadicionado.id })
+            });
+            if (!response_pedido.ok) {
+                const data_pedido = await response_pedido.json();
+                alert('Erro ao enviar pedido: ' + data_pedido.message || 'Erro desconhecido');
+            } else {
+                alert('Pedido enviado com sucesso!');
+                pedidoForm.reset();
+            }
+        } catch (error) {
+            console.error('Erro ao enviar pedido:', error);
+        }
+    });
 }

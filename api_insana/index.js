@@ -71,3 +71,77 @@ app.get('/lista', (req, res) => {
     }
     });
 });
+
+app.post('/pedido', (req, res) => {
+    const { idadicionante, idadicionado } = req.body;
+    const queryCheck = 'SELECT * FROM pedidos WHERE adicionante = ? AND adicionado = ?';
+    db.query(queryCheck, [idadicionante, idadicionado], (err, results) => {
+        if (results.length > 0) {
+            return res.status(400).json({ message: 'Ja enviaste um pedido para este utilizador' });
+        }else{
+            const query = 'INSERT INTO pedidos (adicionante, adicionado,status) VALUES (?, ?, ?)';
+            db.query(query, [idadicionante, idadicionado, 'pendente'], (err, results) => {
+            if (err) {
+            console.error('Erro no mysql:', err.sqlMessage || err.message);
+            res.status(500).json({ message: 'Erro ao enviar pedido' });
+        } else {
+            res.status(201).send({ message: 'Pedido enviado com sucesso' });
+        }
+    });
+}
+    });
+
+});
+
+app.post('/idadicionante', (req, res) => {
+    const { idadicionante } = req.body;
+    db.query('SELECT id FROM utilizador WHERE username = ?', [idadicionante], (err, results) => {
+        if (err) {
+            res.status(500).send({ message: 'Erro ao obter ID do adicionante' });
+        } else {
+            if (results.length > 0) {
+                res.status(200).send({ id: results[0].id });
+            } else {
+                res.status(404).send({ message: 'Utilizador não encontrado' });
+            }
+        }
+    });
+
+});
+
+app.post('/idadicionado', (req, res) => {
+    const { idadicionado } = req.body;
+    db.query('SELECT id FROM utilizador WHERE username = ?', [idadicionado], (err, results) => {
+        if (err) {
+            res.status(500).send({ message: 'Erro ao obter ID do adicionado' });
+        } else {
+            if (results.length > 0) {
+                res.status(200).send({ id: results[0].id });
+            } else {
+                res.status(404).send({ message: 'Utilizador não encontrado' });
+            }
+        }
+    });
+
+});
+
+app.get('/listapedidos', (req, res) => {
+    const meuidpedido = req.query.adicionado;
+    if (!meuidpedido || meuidpedido === 'undefined' || meuidpedido === 'null') {
+        return res.status(400).json({ message: 'Parâmetro "adicionado" é obrigatório' });
+    }
+    const query = 'SELECT p.id, u.username AS remetente FROM pedidos p JOIN utilizador u ON p.adicionante = u.id WHERE p.adicionado = (SELECT id FROM utilizador WHERE username = ?';
+    db.query(query, [meuidpedido], (err, results) => {
+        if (err) {
+            console.error('Erro no mysql:', err.sqlMessage || err.message);
+            res.status(500).send({ message: 'Erro ao obter pedidos' });
+        } else {
+            const resultados = results.map(pedido => ({
+                id: pedido.id,
+                adicionante: pedido.remetente
+            }));
+            res.status(200).send(resultados);
+        }
+    });
+});
+
