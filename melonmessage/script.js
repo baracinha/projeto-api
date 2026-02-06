@@ -68,3 +68,31 @@ const username = localStorage.getItem('nomeUser');
 if (userDisplay && username) {
     userDisplay.textContent = username;
 }
+
+const logoutButton = document.getElementById('btn_logout');
+if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('nomeUser');
+        window.location.href = 'login.html';
+    });
+    if (!localStorage.getItem('nomeUser')) {
+        logoutButton.style.display = 'none';
+        window.location.href = 'login.html';
+    }
+}
+
+const listaUtilizadoresDiv = document.getElementById('lista_utilizadores');
+if (listaUtilizadoresDiv) {
+    fetch('http://localhost:8080/lista')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.textContent = `Nome: ${user.username}, Email: ${user.email}, Telefone: ${user.telefone}`;
+                listaUtilizadoresDiv.appendChild(userDiv);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao obter a lista de utilizadores:', error);
+        });
+}

@@ -13,26 +13,21 @@
 <body>
     <header>
         <h1>melonmessage v2 (com js)</h1>
-        <nav>
+        <nav class="navegacao">
             <a href="index.html">Home</a>
-            <a href="login.html">About</a>
             <a href="contact.html">Contact</a>
+            <a href="listar.html">teste</a>
+            <button id="btn_logout">Log out</button>
         </nav>
     </header>
     <main>
-        <div class="containerlogin">
-            <form id="signinform" class="formulariologin">
-                <input type="text" name="name" id="name" placeholder="Seu nome">
-                <input type="email" name="email" id="email" placeholder="Seu email">
-                <input type="text" name="telefone" id="tel" placeholder="Seu telefone">
-                <input type="password" name="password" id="password" placeholder="Sua password">
-                <button type="submit">Enviar</button>
-            </form>
+        <div class="lista">
+            <div id="lista_utilizadores"></div>
         </div>
     </main>
     <footer>
 
     </footer>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

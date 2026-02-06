@@ -20,11 +20,25 @@
             <button id="btn_logout">Log out</button>
         </nav>
     </header>
-    <main>
+    <main class="mainpedidos">
         <div class="containerindex">
-            <h2>Bem-vindo ao MelonMessage! <span id = "user-display"></span></h2>
-            <p>O MelonMessage é uma plataforma de mensagens que permite aos usuários se conectarem e compartilharem suas ideias de forma rápida e fácil. Com uma interface intuitiva e recursos avançados, o MelonMessage é a escolha perfeita para quem deseja se comunicar de maneira eficiente.</p>
-            <p>Registre-se agora para começar a usar o MelonMessage e aproveite todas as suas funcionalidades incríveis!</p>
+            <form id="frm_pedidos">
+                <h1>Adicionar Amigos</h1>
+                <input type="text" name="adicionado" id="adicionado" placeholder="insere o username">
+                <button type="submit">Enviar pedido</button>
+            </form>
+        </div>
+        <div class="containerpedidos">
+                <h2>Pedidos de amizade</h2>
+                <div class="dummypedido" id="pedidos">
+                    <img class="imgperfil" src="img/79dd11a9452a92a1accceec38a45e16a.jpg" alt="">
+                    <h1 id="useradicionante">nome</h1>
+                    <p>enviou te um pedido de amizade</p>
+                    <div class="acoes" id="actions">
+                        <button id="accept">aceitar</button>
+                        <button id="decline">recusar</button>
+                    </div>
+                </div>
         </div>
     </main>
     <footer>

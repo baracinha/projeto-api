@@ -1,16 +1,124 @@
 .containerlogin {
     border: 1px solid red;
     position: relative;
-};
+}
+
+
+
+body {
+    background-image: url(img/ChatGPT\ Image\ 5_02_2026\,\ 21_56_35.png);
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    padding:5% 5%;
+    display: flex;
+    height: 80vh;
+}
+
+.containerindex {
+    box-sizing: border-box;
+    color: white;
+    background-color: black;
+    padding: 10px 20px;
+    height : 50%;
+    width: 50%;
+    position: relative;
+}
 
 .formulariologin input {
     display: block;
     margin-bottom: 10px;
 }
 
-.navegacao {
-    background-color: #f0f0f0;
+.dummypedido {
+    border: 1px solid red;
+    margin-bottom: 10px;
     padding: 10px;
+    color: white;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.acoes{
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+}
+
+.acoes button {
+    padding: 5px 10px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 37px;
+}
+
+.imgperfil {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.containerpedidos {
+    box-sizing: border-box;
+    color: white;
+    background-color: black;
+    padding: 10px 20px;
+    height : 50%;
+    width: 50%;
+    position: relative;
+    overflow-y: auto;
+}
+
+.mainpedidos {
+    border: 1px solid blue;
+}
+
+.mainpedidos div {
+    margin-left: 20px;
+}
+
+.navegacao {
+    background-color: black;
+    padding: 10px;   
+}
+
+.navegacao a{
+    display: inline-block;
+    margin-right: 20px;
     text-decoration: none;
-    
+    color: white;
+    font-size: 20px;
+    transition: 0.3s ease;
+}
+
+.navegacao a:hover {
+    transform : scale(1.1);
+}
+
+header {
+    color: white;
+    padding : 2%;
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+
+}
+
+html {
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }

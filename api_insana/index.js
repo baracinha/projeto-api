@@ -55,3 +55,19 @@ app.post('/login', (req, res) => {
 
 
 });
+
+app.get('/lista', (req, res) => {
+    db.query('SELECT * FROM utilizador', (err, results) => {
+        if (err) {
+            res.status(500).send({ message: 'Erro ao obter utilizadores' });
+        } else {
+            const users = results.map(user => ({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                telefone: user.telefone
+        }));
+        res.status(200).send(users);
+    }
+    });
+});
