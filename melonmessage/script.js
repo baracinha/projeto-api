@@ -1,62 +1,108 @@
-const form = document.getElementById('signinform');
+/*
+const API_URL = 'http://localhost:8080';
 
-if (form)  {
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+// Função Utilitária para tratar todos os POSTs do teu site
+async function postDados(endpoint, objetoDados) {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(objetoDados)
+    });
+    return await response.json();
+}
+*/
+
+const API_URL = 'http://localhost:8080';
+
+async function posts(endpoint, body) {
+    const response = await fetch(`${API_URL}${endpoint}`,{
+        method : 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body) 
+    });
+    return await response.json();
+}
+
+async function gets(endpoint,body) {
+    try{
+        const response = await fetch(`${API_URL}${endpoint}`,{
+            method : 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+        return await response.json();
+    }catch (error){
+        console.error(`erro no ${endpoint}.`);
+        return [];
+    }
+}
+
+async function Login(e){
+     e.preventDefault();
+        const username = document.getElementById('name').value;
+        const password = document.getElementById('password').value;
+        
+        const data = await posts('/login', {username, password});
+            if (data.nomeUser) {
+                localStorage.setItem('nomeUser', data.nomeUser);
+                localStorage.setItem('idUser', data.idUser);
+                window.location.href = 'index.html';
+            } else {
+                alert('Erro: '+ data.message );
+            }
+}
+
+async function criarconta(e){
+    e.preventDefault();
 
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const tel = document.getElementById('tel').value;
 
-        try {
-            const response = await fetch('http://localhost:8080/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name, email, password, tel })
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                alert('erro: '+ data.message || 'erro desconhecido');
-            } else {
-                alert('bem vindo, ' + name);
-                form.reset();
+        const data = await posts('/register', {name,email, password,tel }); 
+            if(data.id){
+                console.log('conta criada com sucesso');
+                window.location.href = 'index.html'
             }
-        } catch (error) {
-            console.error('Erro ao registrar utilizador:', error);
-        }  
-    });
+            
+}
+
+async function logout(){
+
+    localStorage.removeItem('nomeUser');
+        window.location.href = 'login.html';
+
+}
+
+async function listarpedidos(){
+    const nome = localStorage.getItem('nomeUser');
+    if(!nome) return;
+    const nomereal = encodeURIComponent(localStorage.getItem('nomeUser'));
+    const data = await gets('/listapedidos?adicionado=' + nomereal)
+    const listaPedidosDiv = document.getElementById('containerpedidos');
+        if(listaPedidosDiv && data.length > 0){
+                const model = document.getElementById('pedidos');
+            data.forEach(pedido =>{
+                const newdiv = model.cloneNode(true);
+                newdiv.removeAttribute('id');
+                newdiv.className = 'dummypedido';
+                newdiv.querySelector('.useradicionante').textContent = pedido.username;
+                listaPedidosDiv.appendChild(newdiv);
+            });
+        }
+}
+
+
+const form = document.getElementById('signinform');
+
+if (form)  {
+    form.addEventListener('submit', criarconta);
 }
 const loginForm = document.getElementById('loginform');
 
 if (loginForm) {
 
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('name').value;
-        const password = document.getElementById('password').value;
-        try {
-            const response = await fetch('http://localhost:8080/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: username, password: password })
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                alert('Erro: ' + data.message || 'Erro desconhecido');
-            } else {
-            localStorage.setItem('nomeUser', data.nomeUser);
-            localStorage.setItem('idUser', data.idUser);
-            window.location.href = 'index.html';
-            }
-        } catch (error) {
-            console.error('Erro ao efetuar login:', error);
-        }
-    });
+    loginForm.addEventListener('submit', Login);
 
 }  else {
     console.log('Login form not found on this page.');
@@ -70,10 +116,8 @@ if (userDisplay && username) {
 
 const logoutButton = document.getElementById('btn_logout');
 if (logoutButton) {
-    logoutButton.addEventListener('click', () => {
-        localStorage.removeItem('nomeUser');
-        window.location.href = 'login.html';
-    });
+    logoutButton.addEventListener('click', logout)
+        
     if (!localStorage.getItem('nomeUser')) {
         logoutButton.style.display = 'none';
         window.location.href = 'login.html';
@@ -98,26 +142,8 @@ if (listaUtilizadoresDiv) {
 }
 
 const listaPedidosDiv = document.getElementById('containerpedidos');
-const usernamesim = localStorage.getItem('nomeUser');
 if(listaPedidosDiv) {
-    const nome = encodeURIComponent(localStorage.getItem('nomeUser'));
-    const usernamedysplay = document.getElementById('useradicionante');
-    fetch('http://localhost:8080/listapedidos?adicionado=' + nome)
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(pedido => {
-                console.log('Pedido recebido:', pedido);
-                const model = document.getElementById('pedidos');
-                const newdiv = model.cloneNode(true);
-                newdiv.removeAttribute('id');
-                newdiv.className = 'dummypedido';
-                newdiv.querySelector('.useradicionante').textContent = pedido.username;
-                listaPedidosDiv.appendChild(newdiv);
-            });
-        })
-        .catch(error => {
-            console.error('Erro ao obter a lista de pedidos:', error);
-        });
+        listarpedidos()
     }
 
 const pedidoForm = document.getElementById('frm_pedidos');
