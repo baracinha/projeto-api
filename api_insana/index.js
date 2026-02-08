@@ -47,7 +47,7 @@ app.post('/login', (req, res) => {
         if (results.length > 0) {
             const user = results[0];
             const token = jwt.sign({ id: user.id, name: user.username }, 'secretkey', { expiresIn: '1h' });
-            res.status(200).json({ message: 'Login bem-sucedido', token, nomeUser: user.username });
+            res.status(200).json({ message: 'Login bem-sucedido', token, nomeUser: user.username, idUser: user.id });
         } else {
             res.status(401).json({ message: 'Credenciais inválidas' });
         }
@@ -127,21 +127,58 @@ app.post('/idadicionado', (req, res) => {
 
 app.get('/listapedidos', (req, res) => {
     const meuidpedido = req.query.adicionado;
-    if (!meuidpedido || meuidpedido === 'undefined' || meuidpedido === 'null') {
-        return res.status(400).json({ message: 'Parâmetro "adicionado" é obrigatório' });
-    }
-    const query = 'SELECT p.id, u.username AS remetente FROM pedidos p JOIN utilizador u ON p.adicionante = u.id WHERE p.adicionado = (SELECT id FROM utilizador WHERE username = ?';
-    db.query(query, [meuidpedido], (err, results) => {
+    const sql = `SELECT u.username 
+    FROM pedidos p
+    JOIN utilizador u ON p.adicionante = u.id
+    JOIN utilizador u2 ON p.adicionado = u2.id
+    WHERE u2.username = ? AND p.status = 'pendente'`;
+        db.query(sql, [meuidpedido], (err, results) => {
+            if (err) {
+                console.error('Erro no mysql:', err.sqlMessage || err.message);
+                return res.status(500).json({ error : err.message});
+            }        
+            res.status(200).json(results);
+        });
+});
+
+app.post('/fazeramizade', (req, res) => {
+    const idadicionado = req.body.idadicionado;
+    const idadicionante = req.body.idadicionante;
+    const query = 'UPDATE pedidos SET status = ? WHERE adicionante = ? AND adicionado = ?';
+    db.query(query, ['aceite', idadicionante, idadicionado], (err, results) => {
         if (err) {
             console.error('Erro no mysql:', err.sqlMessage || err.message);
-            res.status(500).send({ message: 'Erro ao obter pedidos' });
-        } else {
-            const resultados = results.map(pedido => ({
-                id: pedido.id,
-                adicionante: pedido.remetente
-            }));
-            res.status(200).send(resultados);
+            res.status(500).json({ message: 'Erro a atualizar o status' });
+        } else{
+            console.log('Pedido de ' + idadicionante + ' atualizado para aceito');
+            const dataAdicionado = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            db.query('INSERT INTO amizades (user1, user2, dataadicionado) VALUES (?, ?, ?)', [idadicionante, idadicionado, dataAdicionado], (err, results) => {
+                if (err) {
+                    console.error('Erro no mysql:', err.sqlMessage || err.message);
+                    res.status(500).json({ message: 'Erro a criar amizade' });
+                } else {
+                    res.status(200).json({ message: 'Amizade criada com sucesso' });
+                }
+            });
         }
     });
 });
+
+app.get('/getidadicionante', (req, res) => {
+    const idadicionante = req.query.username;
+    db.query('SELECT id FROM utilizador WHERE username = ?', [idadicionante], (err, results) => {
+        if (err) {
+            res.status(500).send({ message: 'Erro ao obter ID do adicionante' });
+        } else {
+            if (results.length > 0) {
+                res.status(200).json({ id: results[0].id });
+            } else {
+                res.status(404).json({ message: 'Utilizador não encontrado' });
+            }
+        }
+    });
+
+});
+
+
 

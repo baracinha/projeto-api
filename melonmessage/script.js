@@ -50,6 +50,7 @@ if (loginForm) {
                 alert('Erro: ' + data.message || 'Erro desconhecido');
             } else {
             localStorage.setItem('nomeUser', data.nomeUser);
+            localStorage.setItem('idUser', data.idUser);
             window.location.href = 'index.html';
             }
         } catch (error) {
@@ -96,7 +97,7 @@ if (listaUtilizadoresDiv) {
         });
 }
 
-const listaPedidosDiv = document.getElementById('pedidos');
+const listaPedidosDiv = document.getElementById('containerpedidos');
 const usernamesim = localStorage.getItem('nomeUser');
 if(listaPedidosDiv) {
     const nome = encodeURIComponent(localStorage.getItem('nomeUser'));
@@ -105,10 +106,13 @@ if(listaPedidosDiv) {
         .then(response => response.json())
         .then(data => {
             data.forEach(pedido => {
-                const pedidoDiv = document.createElement('div');
-                pedidoDiv.className = 'dummypedido';
-                pedidoDiv.textContent = `asdasd:${pedido.remetente}`;
-                listaPedidosDiv.appendChild(pedidoDiv);
+                console.log('Pedido recebido:', pedido);
+                const model = document.getElementById('pedidos');
+                const newdiv = model.cloneNode(true);
+                newdiv.removeAttribute('id');
+                newdiv.className = 'dummypedido';
+                newdiv.querySelector('.useradicionante').textContent = pedido.username;
+                listaPedidosDiv.appendChild(newdiv);
             });
         })
         .catch(error => {
@@ -156,6 +160,41 @@ if (pedidoForm) {
             }
         } catch (error) {
             console.error('Erro ao enviar pedido:', error);
+        }
+    });
+}
+
+const pedidosContainer = document.getElementById('containerpedidos');
+if (pedidosContainer) {
+    pedidosContainer.addEventListener('click', async (e) => {
+        if (e.target && e.target.id === 'accept') {
+            const myusername = localStorage.getItem('idUser');
+            const userAdicionante = e.target.closest('.dummypedido').querySelector('.useradicionante').textContent;
+            try {
+
+                const idAdicionante = await fetch('http://localhost:8080/getidadicionante?username=' + userAdicionante);
+                const dataid = await idAdicionante.json();
+                const userAdicionanteId = dataid.id;
+                const responseamizade = await fetch('http://localhost:8080/fazeramizade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        idadicionante: userAdicionanteId, 
+                        idadicionado: myusername 
+                    })
+                });
+                const response = await responseamizade.json();
+
+                    if (!responseamizade.ok) {
+                        alert('Erro ao aceitar amizade: ' + response.message || 'Erro desconhecido');
+                    } else {                    alert('Amizade aceita com sucesso!');
+                        e.target.closest('.dummypedido').remove();
+                    }
+            } catch (error) {
+                console.error('Erro ao aceitar amizade:', error);
+            }
         }
     });
 }
