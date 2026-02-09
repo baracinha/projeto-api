@@ -23,7 +23,7 @@ async function posts(endpoint, body) {
     return await response.json();
 }
 
-async function gets(endpoint,body) {
+async function gets(endpoint) {
     try{
         const response = await fetch(`${API_URL}${endpoint}`,{
             method : 'GET',
@@ -92,6 +92,44 @@ async function listarpedidos(){
         }
 }
 
+async function mandarpedidos(e){
+        e.preventDefault();
+        const form = e.target
+        try {
+            const nomeadicionado = document.getElementById('adicionado').value;
+            const nomeadicionante = localStorage.getItem('nomeUser');
+            if (!nomeadicionado || nomeadicionado == nomeadicionante){
+                alert("nome invalido");
+                return;
+            }
+            const data = await posts('/pedido',{idadicionado: nomeadicionado, idadicionante: nomeadicionante}) 
+                if(data.message && data.message.includes('sucesso')){
+                    console.log('pedido enviado com sucesso');
+                    alert("pedido enviado para"+ nomeadicionado);
+                    form.reset();
+                }else {
+                    alert("erro a enviar pedido" + data.message)
+                    form.reset();
+                }
+        } catch (error) {
+            console.error('bisa', error.message);
+        }
+}
+
+async function aceitarpedidos(e){
+    e.preventDefault();
+    if (e.target && e.target.id === 'accept') {
+            const myusername = localStorage.getItem('idUser');
+            const userAdicionante = e.target.closest('.dummypedido').querySelector('.useradicionante').textContent;
+            try {
+                    const data = await posts('/fazeramizade', {adicionante :userAdicionante ,adicionado: myusername});
+                    alert(`amizade de ${userAdicionante} aceite`);
+                    location.reload();
+            } catch (error) {
+                console.error('Erro ao aceitar amizade:', error);
+            }
+        }
+}
 
 const form = document.getElementById('signinform');
 
@@ -148,79 +186,10 @@ if(listaPedidosDiv) {
 
 const pedidoForm = document.getElementById('frm_pedidos');
 if (pedidoForm) {
-    pedidoForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const idadicionado = document.getElementById('adicionado').value;
-        const idadicionante = localStorage.getItem('nomeUser');
-
-        try {
-            const response_idadicionante = await fetch('http://localhost:8080/idadicionante', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ idadicionante })
-            });
-            const response_idadicionado = await fetch('http://localhost:8080/idadicionado', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ idadicionado })
-            });
-            const data_idadicionante = await response_idadicionante.json();
-            const data_idadicionado = await response_idadicionado.json();
-            const response_pedido = await fetch('http://localhost:8080/pedido', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ idadicionante: data_idadicionante.id, idadicionado: data_idadicionado.id })
-            });
-            if (!response_pedido.ok) {
-                const data_pedido = await response_pedido.json();
-                alert('Erro ao enviar pedido: ' + data_pedido.message || 'Erro desconhecido');
-            } else {
-                alert('Pedido enviado com sucesso!');
-                pedidoForm.reset();
-            }
-        } catch (error) {
-            console.error('Erro ao enviar pedido:', error);
-        }
-    });
+    pedidoForm.addEventListener('submit', mandarpedidos)
 }
 
 const pedidosContainer = document.getElementById('containerpedidos');
 if (pedidosContainer) {
-    pedidosContainer.addEventListener('click', async (e) => {
-        if (e.target && e.target.id === 'accept') {
-            const myusername = localStorage.getItem('idUser');
-            const userAdicionante = e.target.closest('.dummypedido').querySelector('.useradicionante').textContent;
-            try {
-
-                const idAdicionante = await fetch('http://localhost:8080/getidadicionante?username=' + userAdicionante);
-                const dataid = await idAdicionante.json();
-                const userAdicionanteId = dataid.id;
-                const responseamizade = await fetch('http://localhost:8080/fazeramizade', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        idadicionante: userAdicionanteId, 
-                        idadicionado: myusername 
-                    })
-                });
-                const response = await responseamizade.json();
-
-                    if (!responseamizade.ok) {
-                        alert('Erro ao aceitar amizade: ' + response.message || 'Erro desconhecido');
-                    } else {                    alert('Amizade aceita com sucesso!');
-                        e.target.closest('.dummypedido').remove();
-                    }
-            } catch (error) {
-                console.error('Erro ao aceitar amizade:', error);
-            }
-        }
-    });
+    pedidosContainer.addEventListener('click', aceitarpedidos);
 }
