@@ -152,7 +152,23 @@ app.post('/fazeramizade', (req, res) => {
     });
 });
 
+app.get('/listaamigos', (req,res)=>{
+    const adicionado = req.query.adicionado;
+    sql = `SELECT username FROM utilizador WHERE id IN(
+            SELECT user1 FROM amizades WHERE user2 = (SELECT id FROM utilizador WHERE username = ?)
+            UNION
+            SELECT user2 FROM amizades WHERE user1 = (SELECT id FROM utilizador WHERE username = ?)
+            )`;
 
+    db.query(sql, [adicionado,adicionado] ,(err, results)=>{
+        if(err){
+            console.error(err.sqlMessage);
+            res.status(500).json({message: 'erro a listar amigos'}, err.sqlMessage);
+        }else{
+            res.status(200).json(results);
+        }
+    });
+})
 
 
 

@@ -116,6 +116,30 @@ async function mandarpedidos(e){
         }
 }
 
+async function listaramizades(){
+    const adicionado = localStorage.getItem('nomeUser');
+    try {
+        if(!adicionado) return;
+        const data = await gets('/listaamigos?adicionado=' + adicionado);
+        if(data.length == 0){
+            console.log('sem pedidos');
+        } else {
+            const listaPedidosDiv = document.getElementById('containeramigos');
+            const modelo = document.getElementById('amigos')
+            data.forEach(pedido =>{
+                const newdiv = modelo.cloneNode(true);
+                newdiv.removeAttribute('id');
+                newdiv.className = 'dummyamigo';
+                newdiv.querySelector('.useradicionante').textContent = pedido.username;
+                listaPedidosDiv.appendChild(newdiv);
+            });
+        }
+    } catch(error){
+        console.log('sexo')
+        console.error(error.message)
+    }
+}
+
 async function aceitarpedidos(e){
     e.preventDefault();
     if (e.target && e.target.id === 'accept') {
@@ -131,65 +155,58 @@ async function aceitarpedidos(e){
         }
 }
 
-const form = document.getElementById('signinform');
+async function ToolBox(){
+    
+    listaramizades();
+    
+    console.log('teste');
+        const form = document.getElementById('signinform');
 
-if (form)  {
-    form.addEventListener('submit', criarconta);
-}
-const loginForm = document.getElementById('loginform');
+    if (form)  {
+        form.addEventListener('submit', criarconta);
+    }
+    const loginForm = document.getElementById('loginform');
 
-if (loginForm) {
+    if (loginForm) {
 
-    loginForm.addEventListener('submit', Login);
+        loginForm.addEventListener('submit', Login);
 
-}  else {
-    console.log('Login form not found on this page.');
-}
+    }  else {
+        console.log('Login form not found on this page.');
+    }
 
-const userDisplay = document.getElementById('user-display');
-const username = localStorage.getItem('nomeUser');
-if (userDisplay && username) {
-    userDisplay.textContent = username;
-}
+    const userDisplay = document.getElementById('user-display');
+    const username = localStorage.getItem('nomeUser');
+    if (userDisplay && username) {
+        userDisplay.textContent = username;
+    }
 
-const logoutButton = document.getElementById('btn_logout');
-if (logoutButton) {
-    logoutButton.addEventListener('click', logout)
-        
-    if (!localStorage.getItem('nomeUser')) {
-        logoutButton.style.display = 'none';
-        window.location.href = 'login.html';
+    const logoutButton = document.getElementById('btn_logout');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', logout)
+            
+        if (!localStorage.getItem('nomeUser')) {
+            logoutButton.style.display = 'none';
+            window.location.href = 'login.html';
+        }
+    }
+
+    const listaPedidosDiv = document.getElementById('containerpedidos');
+    if(listaPedidosDiv) {
+            listarpedidos()
+        }
+
+    const pedidoForm = document.getElementById('frm_pedidos');
+    if (pedidoForm) {
+        pedidoForm.addEventListener('submit', mandarpedidos)
+    }
+
+    const pedidosContainer = document.getElementById('containerpedidos');
+    if (pedidosContainer) {
+        pedidosContainer.addEventListener('click', aceitarpedidos);
     }
 }
 
-const listaUtilizadoresDiv = document.getElementById('lista_utilizadores');
 
-if (listaUtilizadoresDiv) {
-    fetch('http://localhost:8080/lista')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(user => {
-                const userDiv = document.createElement('div');
-                userDiv.textContent = `Nome: ${user.username}, Email: ${user.email}, Telefone: ${user.telefone}`;
-                listaUtilizadoresDiv.appendChild(userDiv);
-            });
-        })
-        .catch(error => {
-            console.error('Erro ao obter a lista de utilizadores:', error);
-        });
-}
 
-const listaPedidosDiv = document.getElementById('containerpedidos');
-if(listaPedidosDiv) {
-        listarpedidos()
-    }
-
-const pedidoForm = document.getElementById('frm_pedidos');
-if (pedidoForm) {
-    pedidoForm.addEventListener('submit', mandarpedidos)
-}
-
-const pedidosContainer = document.getElementById('containerpedidos');
-if (pedidosContainer) {
-    pedidosContainer.addEventListener('click', aceitarpedidos);
-}
+window.onload = ToolBox();

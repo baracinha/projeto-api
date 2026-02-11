@@ -23,14 +23,50 @@ main {
     color: white;
     background-color: black;
     padding: 10px 20px;
-    height : 50%;
-    width: 50%;
+    height : 30%;
+    width: 25%;
     position: relative;
+}
+
+.containerindex input{
+    border: none;
+    height: 50px;
+    width: 70%;
+    font-size: 20px;
+}
+
+.containerindex input:focus{
+    outline: none;
+}
+
+.containerindex button{
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
+    border: none;
+    height: 50px;
+}
+
+.containerindex button:hover{
+    cursor: pointer;
 }
 
 .formulariologin input {
     display: block;
     margin-bottom: 10px;
+}
+
+.navegacao button{
+    border: 1px solid white;
+    background-color: black;
+    color: white;
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
+    transition: 0.3s ease;
+}
+
+.navegacao button:hover{
+    transform: scale(1.1);
+    cursor: pointer;
 }
 
 .dummypedido {
@@ -41,6 +77,20 @@ main {
     align-items: center;
     display: flex;
     justify-content: space-between;
+}
+
+.dummyamigo {
+    border: 1px solid red;
+    margin-bottom: 10px;
+    padding: 10px;
+    color: white;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+#amigos {
+    display: none;
 }
 
 .acoes{
@@ -102,6 +152,17 @@ main {
     color: white;
     font-size: 20px;
     transition: 0.3s ease;
+}
+
+.containerlistaamigos {
+    box-sizing: border-box;
+    color: white;
+    background-color: black;
+    padding: 20px 20px;
+    height : 30%;
+    width: 40%;
+    position: relative;
+    overflow: auto;
 }
 
 .navegacao a:hover {
