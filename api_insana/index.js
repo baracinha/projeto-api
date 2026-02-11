@@ -52,8 +52,6 @@ app.post('/login', (req, res) => {
             res.status(401).json({ message: 'Credenciais inválidas' });
         }
     });
-
-
 });
 
 app.get('/lista', (req, res) => {

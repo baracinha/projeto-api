@@ -209,4 +209,4 @@ async function ToolBox(){
 
 
 
-window.onload = ToolBox();
+window.onload = ToolBox;
