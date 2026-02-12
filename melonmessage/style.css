@@ -69,6 +69,69 @@ main {
     cursor: pointer;
 }
 
+
+
+.fotochat { 
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.containermensagens {
+    box-sizing: border-box;
+    color: white;
+    background-color: black;
+    padding: 10px 0px;
+    height : 80%;
+    width: 50%;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    justify-items: center;
+}
+
+.dummychatcard {
+    width: 90%;
+    border: 1px solid red;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.campomensagens {
+    position: relative;
+    display: flex;
+    padding: 10px 10px;
+    border: 1px solid red;
+    margin: 15px;
+    width: 90%;
+    height: 65%;
+    overflow-y: auto;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.display_mensagemrecebida {
+    align-self: flex-start;
+    max-width: 50%;
+    background-color: white;
+    color: black;
+    word-wrap: break-word;
+    padding: 0px 7px;   
+}
+
+.display_mensagemenviada {
+    align-self: flex-end;
+    max-width: 50%;
+    background-color: gray;
+    color: black;
+    padding: 0px 7px;
+    word-wrap: break-word;
+}
+
 .dummypedido {
     border: 1px solid red;
     margin-bottom: 10px;

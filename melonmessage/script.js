@@ -155,6 +155,20 @@ async function aceitarpedidos(e){
         }
 }
 
+async function selectUser(e){
+    e.preventDefault();
+    if(e.target && e.target.id === 'conversar'){
+        const enviante = document.getElementById('usernameconversa')
+        const userconversa = e.target.closest('.dummyamigo').querySelector('.useradicionante').textContent;
+        enviante.textContent = userconversa;
+        /*brevemente o codigo para listar mensagens*/ 
+    }
+}
+
+async function enviarMsg(e){
+
+}
+
 async function ToolBox(){
     
     listaramizades();
@@ -193,17 +207,27 @@ async function ToolBox(){
 
     const listaPedidosDiv = document.getElementById('containerpedidos');
     if(listaPedidosDiv) {
-            listarpedidos()
+            listarpedidos();
         }
 
     const pedidoForm = document.getElementById('frm_pedidos');
     if (pedidoForm) {
-        pedidoForm.addEventListener('submit', mandarpedidos)
+        pedidoForm.addEventListener('submit', mandarpedidos);
     }
 
     const pedidosContainer = document.getElementById('containerpedidos');
     if (pedidosContainer) {
         pedidosContainer.addEventListener('click', aceitarpedidos);
+    }
+
+    const userlist = document.getElementById('containeramigos');
+    if(userlist) {
+        userlist.addEventListener('click', selectUser);
+    }
+
+    const enviarmsg = document.getElementById('frm_mensagem')
+    if(enviarmsg){
+        enviarmsg.addEventListener('cli')
     }
 }
 

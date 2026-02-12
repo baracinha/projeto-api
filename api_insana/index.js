@@ -169,4 +169,11 @@ app.get('/listaamigos', (req,res)=>{
 })
 
 
+app.post('/inserirmensagens', (req,res) => {
+    const enviante = req.query.username;
+    const receptor = req.body.receptor
+    const mensagem = req.body.mensagem;
+    sql = 'insert'
+});
+
 

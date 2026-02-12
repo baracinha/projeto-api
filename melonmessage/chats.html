@@ -26,14 +26,31 @@
            <div class="dummyamigo" id="amigos">
                     <img class="imgperfil" src="img/79dd11a9452a92a1accceec38a45e16a.jpg" alt="">
                     <span class="useradicionante">nome</span>
-                    <button>Conversar</button>
+                    <button id="conversar">Conversar</button>
                 </div> 
         </div>
-        <div class="containerpedidos" id="containerpedidos">
+        <div class="containermensagens" id="containermensagens">
                 <div class="dummychatcard">
-                    <img class="fotochat"src="" alt="">
-                    <h2 class="">nome aqui</h2>
+                    <img class="fotochat" src="img/79dd11a9452a92a1accceec38a45e16a.jpg" alt="">
+                    <h2 class="usernameconversa" id="usernameconversa">nome aqui</h2>
                 </div>
+                <div class="campomensagens">
+                        <div class="display_mensagemrecebida">
+                            <p id="txtrecebido">
+                                mensagem recebida
+                            </p>
+                        </div>
+                        <div class="display_mensagemenviada">
+                            <p id="txtenviado">
+                                mensagem enviada
+                            </p>
+                        </div>
+                </div>
+                <div>
+                    <form id="frm_mensagem">
+                        <input type="text" id="mensagemenviada" placeholder="escreve aqui a tua mensagem">
+                        <button id="enviarmsg">Enviar</button>
+                    </form>
                 </div>
         </div>
     </main>
