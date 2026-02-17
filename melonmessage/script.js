@@ -166,7 +166,29 @@ async function selectUser(e){
 }
 
 async function enviarMsg(e){
-
+    e.preventDefault();
+    const form = e.target;
+    try{
+        const mensagem = document.getElementById('mensagemenviada').value;
+        const enviante = localStorage.getItem('idUser');
+        const receptor = document.getElementById('usernameconversa').textContent;
+        if (receptor === 'nome aqui'){
+            console.error('nenhum utilizador selecionado');
+            form.reset();
+        }else{
+            const data = await posts('/inserirmensagens', {mensagem: mensagem, enviante: enviante, receptor: receptor})
+            if(data.message && data.message.includes('erro')){
+                console.error('erro a enviar a mensagem', error.message);
+                form.reset();
+            }else{
+                console.log('mensagem enviada com sucesso');
+                alert('mensagem enviada');
+                form.reset();
+            }
+        } 
+    } catch (error){
+        console.error('bisa', error);
+    }
 }
 
 async function ToolBox(){
@@ -227,7 +249,7 @@ async function ToolBox(){
 
     const enviarmsg = document.getElementById('frm_mensagem')
     if(enviarmsg){
-        enviarmsg.addEventListener('cli')
+        enviarmsg.addEventListener('submit', enviarMsg);
     }
 }
 

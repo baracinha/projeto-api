@@ -170,10 +170,19 @@ app.get('/listaamigos', (req,res)=>{
 
 
 app.post('/inserirmensagens', (req,res) => {
-    const enviante = req.query.username;
-    const receptor = req.body.receptor
-    const mensagem = req.body.mensagem;
-    sql = 'insert'
+    const {enviante, receptor, mensagem} = req.body;
+    sql = `INSERT INTO mensagens (mensagem, enviante, receptor) VALUES(
+    ?,
+    ?,
+    (SELECT id FROM utilizador WHERE username = ?))`;
+    db.query(sql, [mensagem, enviante, receptor], (err,results)=>{
+        if(err){
+            console.error('erro no sql: ', err.sqlMessage, err.message)
+            res.status(500).json({message: 'erro no sql'}, err.sqlMessage)
+        }else{
+            res.status(200).json({message: 'mensagem enviada', results})
+        }
+    });    
 });
 
 
