@@ -57,7 +57,9 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/lista', (req, res) => {
-    db.query('SELECT * FROM utilizador', (err, results) => {
+    const userquery = req.query.user;
+    const uservariavel = req.body;
+    db.query('SELECT * FROM utilizador WHERE username = ?', [userquery || uservariavel], (err, results) => {
         if (err) {
             res.status(500).send({ message: 'Erro ao obter utilizadores' });
         } else {
@@ -188,14 +190,15 @@ app.post('/inserirmensagens', (req,res) => {
 });
 
 app.get('/listarmensagens', (req,res)=>{
-    const myuser = req.body
-    sql = `SELECT * FROM mensagens WHERE receptor = ?`;
-    db.query(sql ,[myuser,mensagem], (err, results)=>{
+    const myuser = req.body;
+    const enviante = req.body;
+    sql = `SELECT * FROM mensagens WHERE receptor = ? AND enviante = ?`;
+    db.query(sql ,[myuser, enviante], (err, results)=>{
         if(err){
             console.error('erro no sql: ', err.sqlMessage, err.message)
             res.status(500).json({message: 'erro no sql'}, err.sqlMessage)
         }else{
-            res.status(200).json({message: 'mensagem enviada', results})
+            res.status(200).json({message: 'mensagens recebidas para este id: ', results})
         }
     });
 });

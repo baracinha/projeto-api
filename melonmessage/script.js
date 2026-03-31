@@ -140,6 +140,32 @@ async function listaramizades(){
     }
 }
 
+async function listarmensagens(conversado){
+    const meuuser = localStorage.getItem('idUser');
+    try{
+        if(!meuuser) return;
+        const data = await gets('listarmensagens', {enviante: conversado, user: meuuser});
+        if(data.length == 0){
+            console.log('não ha mensagens');
+        }else{
+            const campomensagens = document.getElementById('campomensagens')
+            if(data.results.receptor == meuuser){
+                modelo = document.getElementById('mensagemrecebida');
+                data.forEach(mensagem=>{
+                    const newmsg = modelo.cloneNode(true);
+                    newmsg.removeAttribute('id');
+                    newmsg.className = 'display_mensagemrecebida';
+                    newmsg.querySelector('.txtrecebido').textContent = mensagem.mensagem
+                    campomensagens.appendChild(newmsg)
+                });
+            }
+        }
+    } catch(error){
+        console.log('erro a listar as mensagens')
+        console.error(error.message)
+    }
+}
+
 async function aceitarpedidos(e){
     e.preventDefault();
     if (e.target && e.target.id === 'accept') {
@@ -162,6 +188,13 @@ async function selectUser(e){
         const userconversa = e.target.closest('.dummyamigo').querySelector('.useradicionante').textContent;
         enviante.textContent = userconversa;
         /*brevemente o codigo para listar mensagens*/ 
+        const data = await gets('/lista?user=' + userconversa)
+        if(data.length == 0){
+            console.log('user não encontrado ou não selecionado')
+        }else{
+            const enviantemensagens = data[0].id;
+            listarmensagens(enviantemensagens)
+        }
     }
 }
 
