@@ -15,6 +15,8 @@ app.listen(PORT);
 
 console.log(`Servidor a correr na porta ${PORT}`);
 
+
+
 app.get('/utilizadores', (req, res) => {
     db.query('SELECT * FROM utilizador', (err, results) => {
         if (err) {
@@ -183,6 +185,19 @@ app.post('/inserirmensagens', (req,res) => {
             res.status(200).json({message: 'mensagem enviada', results})
         }
     });    
+});
+
+app.get('/listarmensagens', (req,res)=>{
+    const myuser = req.body
+    sql = `SELECT * FROM mensagens WHERE receptor = ?`;
+    db.query(sql ,[myuser,mensagem], (err, results)=>{
+        if(err){
+            console.error('erro no sql: ', err.sqlMessage, err.message)
+            res.status(500).json({message: 'erro no sql'}, err.sqlMessage)
+        }else{
+            res.status(200).json({message: 'mensagem enviada', results})
+        }
+    });
 });
 
 
