@@ -190,15 +190,13 @@ app.post('/inserirmensagens', (req,res) => {
 });
 
 app.get('/listarmensagens', (req,res)=>{
-    const myuser = req.body;
-    const enviante = req.body;
+    const {enviante, user} = req.query;
     sql = `SELECT * FROM mensagens WHERE receptor = ? AND enviante = ?`;
-    db.query(sql ,[myuser, enviante], (err, results)=>{
+    db.query(sql ,[user, enviante], (err, results)=>{
         if(err){
-            console.error('erro no sql: ', err.sqlMessage, err.message)
-            res.status(500).json({message: 'erro no sql'}, err.sqlMessage)
+            res.status(500).json([])
         }else{
-            res.status(200).json({message: 'mensagens recebidas para este id: ', results})
+            res.status(200).json(results)
         }
     });
 });

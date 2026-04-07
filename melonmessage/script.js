@@ -77,14 +77,17 @@ async function logout(){
 async function listarpedidos(){
     const nome = localStorage.getItem('nomeUser');
     if(!nome) return;
+
     const nomereal = encodeURIComponent(localStorage.getItem('nomeUser'));
     const data = await gets('/listapedidos?adicionado=' + nomereal)
+
     const listaPedidosDiv = document.getElementById('containerpedidos');
+    const model = document.getElementById('pedidos');
         if(listaPedidosDiv && data.length > 0){
-                const model = document.getElementById('pedidos');
             data.forEach(pedido =>{
                 const newdiv = model.cloneNode(true);
                 newdiv.removeAttribute('id');
+                newdiv.display('flex')
                 newdiv.className = 'dummypedido';
                 newdiv.querySelector('.useradicionante').textContent = pedido.username;
                 listaPedidosDiv.appendChild(newdiv);
@@ -142,23 +145,35 @@ async function listaramizades(){
 
 async function listarmensagens(conversado){
     const meuuser = localStorage.getItem('idUser');
+    const campomensagens = document.getElementById('campomensagens')
+
+    campomensagens.innerHTML = '';
     try{
         if(!meuuser) return;
-        const data = await gets('listarmensagens', {enviante: conversado, user: meuuser});
-        if(data.length == 0){
-            console.log('não ha mensagens');
-        }else{
-            const campomensagens = document.getElementById('campomensagens')
-            if(data.results.receptor == meuuser){
-                modelo = document.getElementById('mensagemrecebida');
-                data.forEach(mensagem=>{
+        const data = await gets(`/listarmensagens?enviante=${conversado}&user=${meuuser}`);
+        if (!data || data.length === 0) {
+            console.log('Não há mensagens entre estes utilizadores.');
+        } else {
+            data.forEach(mensagem => {
+                let modelo;
+                if (mensagem.receptor == meuuser) {
+                    modelo = document.getElementById('mensagemrecebida');
+                } else {
+                    modelo = document.getElementById('mensagemenviada'); 
+                }
+                if (modelo) {
                     const newmsg = modelo.cloneNode(true);
                     newmsg.removeAttribute('id');
-                    newmsg.className = 'display_mensagemrecebida';
-                    newmsg.querySelector('.txtrecebido').textContent = mensagem.mensagem
-                    campomensagens.appendChild(newmsg)
-                });
-            }
+                    newmsg.style.display = 'flex'; 
+                    const textoElemento = newmsg.querySelector('.txtrecebido') || newmsg.querySelector('.txtenviado');
+                    if (textoElemento) {
+                        textoElemento.textContent = mensagem.mensagem;
+                    }
+
+                    campomensagens.appendChild(newmsg);
+                }
+            });
+            campomensagens.scrollTop = campomensagens.scrollHeight;
         }
     } catch(error){
         console.log('erro a listar as mensagens')
@@ -168,13 +183,15 @@ async function listarmensagens(conversado){
 
 async function aceitarpedidos(e){
     e.preventDefault();
-    if (e.target && e.target.id === 'accept') {
+    if (e.target && e.target.classList.contains('accept-btn')) {
             const myusername = localStorage.getItem('idUser');
-            const userAdicionante = e.target.closest('.dummypedido').querySelector('.useradicionante').textContent;
+            const container = e.target.closest('.dummypedido');
+            const containeruser = document.getElementById('teste');
+            const userAdicionante = containeruser.textContent;
             try {
                     const data = await posts('/fazeramizade', {adicionante :userAdicionante ,adicionado: myusername});
                     alert(`amizade de ${userAdicionante} aceite`);
-                    location.reload();
+                    Window.location.reload();
             } catch (error) {
                 console.error('Erro ao aceitar amizade:', error);
             }
@@ -193,6 +210,7 @@ async function selectUser(e){
             console.log('user não encontrado ou não selecionado')
         }else{
             const enviantemensagens = data[0].id;
+            console.log("ID do utilizador encontrado:", enviantemensagens);
             listarmensagens(enviantemensagens)
         }
     }
