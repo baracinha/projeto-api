@@ -83,11 +83,14 @@ async function listarpedidos(){
 
     const listaPedidosDiv = document.getElementById('containerpedidos');
     const model = document.getElementById('pedidos');
-        if(listaPedidosDiv && data.length > 0){
+
+    if (!listaPedidosDiv || !model) return;
+
+    if(listaPedidosDiv && data.length > 0){
             data.forEach(pedido =>{
                 const newdiv = model.cloneNode(true);
                 newdiv.removeAttribute('id');
-                newdiv.display('flex')
+                newdiv.style.display = 'flex'
                 newdiv.className = 'dummypedido';
                 newdiv.querySelector('.useradicionante').textContent = pedido.username;
                 listaPedidosDiv.appendChild(newdiv);
@@ -125,10 +128,13 @@ async function listaramizades(){
         if(!adicionado) return;
         const data = await gets('/listaamigos?adicionado=' + adicionado);
         if(data.length == 0){
-            console.log('sem pedidos');
+            console.log('sem amizades');
         } else {
             const listaPedidosDiv = document.getElementById('containeramigos');
             const modelo = document.getElementById('amigos')
+
+            if (!listaPedidosDiv || !modelo) return;
+
             data.forEach(pedido =>{
                 const newdiv = modelo.cloneNode(true);
                 newdiv.removeAttribute('id');
