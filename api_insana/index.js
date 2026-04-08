@@ -191,9 +191,14 @@ app.post('/inserirmensagens', (req,res) => {
 
 app.get('/listarmensagens', (req,res)=>{
     const {enviante, user} = req.query;
-    sql = `SELECT * FROM mensagens WHERE receptor = ? AND enviante = ?`;
-    db.query(sql ,[user, enviante], (err, results)=>{
+    sql = `
+        SELECT * FROM mensagens 
+        WHERE (enviante = ? AND receptor = ?) 
+           OR (enviante = ? AND receptor = ?)
+        ORDER BY id ASC`;
+    db.query(sql ,[enviante,user, user,enviante], (err, results)=>{
         if(err){
+            console.error('erro no sql: ', err)
             res.status(500).json([])
         }else{
             res.status(200).json(results)

@@ -151,12 +151,13 @@ async function listaramizades(){
 
 async function listarmensagens(conversado){
     const meuuser = localStorage.getItem('idUser');
+    
     const campomensagens = document.getElementById('campomensagens')
-
-    campomensagens.innerHTML = '';
     try{
         if(!meuuser) return;
         const data = await gets(`/listarmensagens?enviante=${conversado}&user=${meuuser}`);
+        const url = `/listarmensagens?enviante=${conversado}&user=${meuuser}`;
+        console.log("url gerada:", url)
         if (!data || data.length === 0) {
             console.log('Não há mensagens entre estes utilizadores.');
         } else {
@@ -170,7 +171,7 @@ async function listarmensagens(conversado){
                 if (modelo) {
                     const newmsg = modelo.cloneNode(true);
                     newmsg.removeAttribute('id');
-                    newmsg.style.display = 'flex'; 
+                    newmsg.style.display = 'flex';
                     const textoElemento = newmsg.querySelector('.txtrecebido') || newmsg.querySelector('.txtenviado');
                     if (textoElemento) {
                         textoElemento.textContent = mensagem.mensagem;
@@ -180,6 +181,7 @@ async function listarmensagens(conversado){
                 }
             });
             campomensagens.scrollTop = campomensagens.scrollHeight;
+            
         }
     } catch(error){
         console.log('erro a listar as mensagens')
@@ -192,12 +194,12 @@ async function aceitarpedidos(e){
     if (e.target && e.target.classList.contains('accept-btn')) {
             const myusername = localStorage.getItem('idUser');
             const container = e.target.closest('.dummypedido');
-            const containeruser = document.getElementById('teste');
+            const containeruser = container.querySelector('.useradicionante');
             const userAdicionante = containeruser.textContent;
             try {
                     const data = await posts('/fazeramizade', {adicionante :userAdicionante ,adicionado: myusername});
                     alert(`amizade de ${userAdicionante} aceite`);
-                    Window.location.reload();
+                    location.reload();
             } catch (error) {
                 console.error('Erro ao aceitar amizade:', error);
             }
@@ -207,9 +209,9 @@ async function aceitarpedidos(e){
 async function selectUser(e){
     e.preventDefault();
     if(e.target && e.target.id === 'conversar'){
-        const enviante = document.getElementById('usernameconversa')
-        const userconversa = e.target.closest('.dummyamigo').querySelector('.useradicionante').textContent;
-        enviante.textContent = userconversa;
+        const enviante = document.getElementById('usernameconversa');
+        enviante.textContent = e.target.closest('.dummyamigo').querySelector('.useradicionante').textContent;
+        const userconversa = document.getElementById('usernameconversa').textContent
         /*brevemente o codigo para listar mensagens*/ 
         const data = await gets('/lista?user=' + userconversa)
         if(data.length == 0){
@@ -226,7 +228,7 @@ async function enviarMsg(e){
     e.preventDefault();
     const form = e.target;
     try{
-        const mensagem = document.getElementById('mensagemenviada').value;
+        const mensagem = document.getElementById('mensagemcampo').value;
         const enviante = localStorage.getItem('idUser');
         const receptor = document.getElementById('usernameconversa').textContent;
         if (receptor === 'nome aqui'){

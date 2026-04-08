@@ -3,7 +3,13 @@
     position: relative;
 }
 
+.display_mensagemrecebida {
+    display: none;
+}
 
+.display_mensagemenviada {
+    display: none;
+}
 
 body {
     background-image: url(img/ChatGPT\ Image\ 5_02_2026\,\ 21_56_35.png);
