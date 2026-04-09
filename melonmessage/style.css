@@ -3,13 +3,7 @@
     position: relative;
 }
 
-.display_mensagemrecebida {
-    display: none;
-}
 
-.display_mensagemenviada {
-    display: none;
-}
 
 body {
     background-image: url(img/ChatGPT\ Image\ 5_02_2026\,\ 21_56_35.png);
@@ -122,6 +116,7 @@ main {
 
 .display_mensagemrecebida {
     align-self: flex-start;
+    display: none;
     max-width: 50%;
     background-color: white;
     color: black;
@@ -131,6 +126,7 @@ main {
 
 .display_mensagemenviada {
     align-self: flex-end;
+    display: none;
     max-width: 50%;
     background-color: gray;
     color: black;

@@ -152,35 +152,40 @@ async function listaramizades(){
 async function listarmensagens(conversado){
     const meuuser = localStorage.getItem('idUser');
     
-    const campomensagens = document.getElementById('campomensagens')
+    const campomensagens = document.getElementById('campomensagens');
+    
     try{
         if(!meuuser) return;
         const data = await gets(`/listarmensagens?enviante=${conversado}&user=${meuuser}`);
-        const url = `/listarmensagens?enviante=${conversado}&user=${meuuser}`;
-        console.log("url gerada:", url)
+        campomensagens.replaceChildren();
         if (!data || data.length === 0) {
             console.log('Não há mensagens entre estes utilizadores.');
         } else {
-            data.forEach(mensagem => {
+            for(const mensagem of data){
                 let modelo;
-                if (mensagem.receptor == meuuser) {
-                    modelo = document.getElementById('mensagemrecebida');
+                if(mensagem.receptor == meuuser){
+                    modelo = document.getElementById('mensagemrecebida')
                 } else {
                     modelo = document.getElementById('mensagemenviada'); 
                 }
+
                 if (modelo) {
                     const newmsg = modelo.cloneNode(true);
                     newmsg.removeAttribute('id');
                     newmsg.style.display = 'flex';
-                    const textoElemento = newmsg.querySelector('.txtrecebido') || newmsg.querySelector('.txtenviado');
+
+                    const textoElemento =
+                        newmsg.querySelector('.txtrecebido') ||
+                        newmsg.querySelector('.txtenviado');
+
                     if (textoElemento) {
                         textoElemento.textContent = mensagem.mensagem;
                     }
 
                     campomensagens.appendChild(newmsg);
                 }
-            });
             campomensagens.scrollTop = campomensagens.scrollHeight;
+            }
             
         }
     } catch(error){
@@ -212,14 +217,19 @@ async function selectUser(e){
         const enviante = document.getElementById('usernameconversa');
         enviante.textContent = e.target.closest('.dummyamigo').querySelector('.useradicionante').textContent;
         const userconversa = document.getElementById('usernameconversa').textContent
-        /*brevemente o codigo para listar mensagens*/ 
+        /*codigo para listar mensagens*/
         const data = await gets('/lista?user=' + userconversa)
         if(data.length == 0){
             console.log('user não encontrado ou não selecionado')
         }else{
             const enviantemensagens = data[0].id;
             console.log("ID do utilizador encontrado:", enviantemensagens);
-            listarmensagens(enviantemensagens)
+            await listarmensagens(enviantemensagens);
+            document.querySelectorAll('.buttonconversar').forEach(btn => {
+            btn.style.display = 'block';
+        });
+            const botaoParaEsconder = e.target.closest('.dummyamigo').querySelector('.buttonconversar');
+            botaoParaEsconder.style.display = 'none';
         }
     }
 }
@@ -227,26 +237,39 @@ async function selectUser(e){
 async function enviarMsg(e){
     e.preventDefault();
     const form = e.target;
-    try{
+    
+    try {
         const mensagem = document.getElementById('mensagemcampo').value;
         const enviante = localStorage.getItem('idUser');
-        const receptor = document.getElementById('usernameconversa').textContent;
-        if (receptor === 'nome aqui'){
-            console.error('nenhum utilizador selecionado');
+        const receptorNome = document.getElementById('usernameconversa').textContent;
+
+        if (receptorNome === 'nome aqui' || !mensagem.trim()) {
+            console.error('Nenhum utilizador selecionado ou mensagem vazia');
+            return; 
+        }
+
+        const responseEnvio = await posts('/inserirmensagens', {
+            mensagem: mensagem, 
+            enviante: enviante, 
+            receptor: receptorNome
+        });
+
+        if (responseEnvio.message && responseEnvio.message.includes('erro')) {
+            console.error('Erro ao enviar:', responseEnvio.message);
             form.reset();
-        }else{
-            const data = await posts('/inserirmensagens', {mensagem: mensagem, enviante: enviante, receptor: receptor})
-            if(data.message && data.message.includes('erro')){
-                console.error('erro a enviar a mensagem', error.message);
-                form.reset();
-            }else{
-                console.log('mensagem enviada com sucesso');
-                alert('mensagem enviada');
-                form.reset();
+        } else {
+            form.reset();
+            const userData = await gets('/lista?user=' + receptorNome);
+
+            if (userData && userData.length > 0) {
+                const receptorid = userData[0].id;
+                console.log('A chamar listarmensagens para ID:', receptorid);
+                
+                await listarmensagens(receptorid);
             }
         } 
-    } catch (error){
-        console.error('bisa', error);
+    } catch (error) {
+        console.error('Erro na função enviarMsg:', error);
     }
 }
 
