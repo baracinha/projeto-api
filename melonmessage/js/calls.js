@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = 'http://localhost:5159';
 
 export async function posts(endpoint, body) {
     const response = await fetch(`${API_URL}${endpoint}`,{

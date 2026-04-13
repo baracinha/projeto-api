@@ -23,7 +23,12 @@ export async function criarconta(e){
         const password = document.getElementById('password').value;
         const tel = document.getElementById('tel').value;
 
-        const data = await posts('/register', {name,email, password,tel }); 
+        const data = await posts('/register', {
+            username: name,
+            email: email,
+            telefone: tel,
+            password: password,
+        }); 
             if(data.id){
                 console.log('conta criada com sucesso');
                 window.location.href = 'index.html'
