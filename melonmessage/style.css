@@ -50,7 +50,12 @@ main {
     cursor: pointer;
 }
 
-.formulariologin input {
+.formulariologin input{
+    display: block;
+    margin-bottom: 10px;
+}
+
+.formulariologin select{
     display: block;
     margin-bottom: 10px;
 }
