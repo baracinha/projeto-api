@@ -1,36 +1,32 @@
 <!DOCTYPE html>
-<html>
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-    <title>MelonMessage</title>
-    </head>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Casino</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-    <header>
-        <h1>melonmessage v2 (com js)</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="signup.html">Registrar</a>
-            <a href="contact.html">Contact</a>
-        </nav>
-    </header>
-    <main>
-        <div class="containerlogin">
-            <form id="loginform" class="formulariologin">
-                <input type="text" name="name" id="name" placeholder="username">
-                <input type="password" name="password" id="password" placeholder="password">
-                <button type="submit">Enviar</button>
-            </form>
-        </div>
-    </main>
-    <footer>
 
-    </footer>
-    <script type="module" src="js/script.js"></script>
+
+  <div class="main-content">
+    <a href="login.html" class="logo">CASARÃO</a>
+    <div class="login-side">
+      <div class="login-container">
+        <h1>Iniciar Sessão</h1>
+        <form action="login.html" id="loginform" method="post">
+          <input type="name" name="name" id="name" placeholder="Name" required>
+          <input type="password" name="password" id="password" placeholder="Senha" required>
+          <button type="submit">Entrar</button>
+        </form>
+        <div class="link">
+          <p><a href="#">Esqueceu a senha?</a></p>
+          <p><a href="registro.html">Criar nova conta</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="image-side" style="background-image: url('img/CASA.jpg')"></div>
+  </div>
+ <script type="module" src="js/script.js"></script>
 </body>
 </html>
+
