@@ -10,9 +10,10 @@ export async function Login(e){
             username: username,
             password_hash: password,
         });
-            if (data.nomeUser) {
-                localStorage.setItem('nomeUser', data.nomeUser);
-                localStorage.setItem('idUser', data.idUser);
+            if (data.token) {
+                localStorage.setItem('SessionToken', data.token);
+                localStorage.setItem('nomeUser', data.nome);
+                localStorage.setItem('idUser', data.id);
                 window.location.href = 'index.html';
             } else {
                 alert('Erro: '+ data.message );
@@ -47,7 +48,7 @@ export async function criarconta(e){
 
 export async function logout(){
 
-    localStorage.removeItem('nomeUser');
+    localStorage.removeItem('SessionToken');
         window.location.href = 'login.html';
 
 }
