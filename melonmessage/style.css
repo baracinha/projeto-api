@@ -82,6 +82,9 @@
     }
 
     input[type="name"],
+    input[type="email"],
+    input[type="tel"],
+    select,
     input[type="password"] {
       width: 100%;
       padding: 12px 0;

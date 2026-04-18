@@ -23,14 +23,14 @@ export async function mandarpedidos(e){
             console.error('bisa', error.message);
         }
 }
-
 export async function listaramizades(){
-    const adicionado = localStorage.getItem('nomeUser');
+    const myid = localStorage.getItem('idUser');
     try {
-        if(!adicionado) return;
-        const data = await gets('/listaamigos?adicionado=' + adicionado);
+        if(!myid) return;
+        const data = await gets('/ListUsers?id=' + myid);
+        console.log(data);
         if(data.length == 0){
-            console.log('sem amizades');
+            console.log('sem conversas');
         } else {
             const listaPedidosDiv = document.getElementById('containeramigos');
             const modelo = document.getElementById('amigos')
@@ -41,7 +41,7 @@ export async function listaramizades(){
                 const newdiv = modelo.cloneNode(true);
                 newdiv.removeAttribute('id');
                 newdiv.className = 'dummyamigo';
-                newdiv.querySelector('.useradicionante').textContent = pedido.username;
+                newdiv.querySelector('.useradicionante').textContent = pedido.nome;
                 listaPedidosDiv.appendChild(newdiv);
             });
         }
@@ -50,7 +50,6 @@ export async function listaramizades(){
         console.error(error.message)
     }
 }
-
 export async function aceitarpedidos(e){
     e.preventDefault();
     if (e.target && e.target.classList.contains('accept-btn')) {
@@ -67,7 +66,6 @@ export async function aceitarpedidos(e){
             }
         }
 }
-
 export async function selectUser(e){
     e.preventDefault();
     if(e.target && e.target.id === 'conversar'){
@@ -75,11 +73,11 @@ export async function selectUser(e){
         enviante.textContent = e.target.closest('.dummyamigo').querySelector('.useradicionante').textContent;
         const userconversa = document.getElementById('usernameconversa').textContent
         /*codigo para listar mensagens*/
-        const data = await gets('/lista?user=' + userconversa)
+        const data = await gets('/BasicList?nome=' + userconversa)
         if(data.length == 0){
             console.log('user não encontrado ou não selecionado')
         }else{
-            const enviantemensagens = data[0].id;
+            const enviantemensagens = data.id;
             console.log("ID do utilizador encontrado:", enviantemensagens);
             await listarmensagens(enviantemensagens);
             document.querySelectorAll('.buttonconversar').forEach(btn => {

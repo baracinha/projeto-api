@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Registro - CASARÃO</title>
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -13,9 +13,16 @@
     <div class="login-side">
       <div class="login-container">
         <h1>Criar Conta</h1>
-        <form action="login.html" method="post">
+        <form id="signinform" class="formulariologin">
           <input type="name" name="name" id="name" placeholder="Name" required>
           <input type="email" name="email" id="email" placeholder="Email" required>
+          <input type="tel" name="telefone" id="tel" placeholder="Contacto" required>
+          <select name="cidade" id="cidade">
+                    <option value="Cabeco Velhinho">Cabeco Velhinho</option>
+                    <option value="Aires, palmela">Aires, palmela</option>
+                    <option value="Fernão Ferro">Fernão Ferro</option>
+                    <option value="tipos">tipos</option>
+                    </select>
           <input type="password" name="password" id="password" placeholder="Senha" required>
           <button type="submit">Criar Conta</button>
         </form>
@@ -26,7 +33,7 @@
     </div>
     <div class="image-side" style="background-image: url('img/CASA.jpg')"></div>
   </div>
-
+    <script type="module" src="js/script.js"></script>
 </body>
 </html>
 

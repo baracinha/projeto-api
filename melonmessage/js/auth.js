@@ -22,7 +22,6 @@ export async function Login(e){
 
 export async function criarconta(e){
     e.preventDefault();
-
         const name = document.getElementById('name').value;
         const cidade = document.getElementById('cidade').value
         const email = document.getElementById('email').value;
@@ -32,9 +31,9 @@ export async function criarconta(e){
         const data = await posts('/register', {
             nome: name,
             email: email,
-            telefone: Number(tel),
+            telefone: tel,
             password_hash: password,
-            cargo: 'admin',
+            cargo: 'utilizador',
             bio: "",
             imagem_perfil: "",
             cidade: cidade,
@@ -49,6 +48,8 @@ export async function criarconta(e){
 export async function logout(){
 
     localStorage.removeItem('SessionToken');
+    localStorage.removeItem('nomeUser');
+    localStorage.removeItem('idUser');
         window.location.href = 'login.html';
 
 }

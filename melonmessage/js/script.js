@@ -17,12 +17,13 @@ import {mandarpedidos, listaramizades, listarpedidos, selectUser, aceitarpedidos
 import {listarmensagens, enviarMsg} from './messages.js'
 
 function ToolBox(){
+    const currentid = localStorage.getItem('idUser');
+    console.log('current id: ', currentid)
     
     listaramizades();
     
-    console.log('teste');
+    console.log('ToolBox a correr');
         const form = document.getElementById('signinform');
-
     if (form)  {
         form.addEventListener('submit', criarconta);
     }

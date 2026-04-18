@@ -44,7 +44,6 @@ export async function listarmensagens(conversado){
         console.error(error.message)
     }
 }
-
 export async function enviarMsg(e){
     e.preventDefault();
     const form = e.target;
@@ -59,10 +58,14 @@ export async function enviarMsg(e){
             return; 
         }
 
-        const responseEnvio = await posts('/inserirmensagens', {
-            mensagem: mensagem, 
-            enviante: enviante, 
-            receptor: receptorNome
+        const datareceptor = await gets('/BasicList?nome=' + receptorNome);
+        const receptor = datareceptor.id;
+
+
+        const responseEnvio = await posts('/InsertMessages', {
+            texto_mensagem: mensagem, 
+            id_enviado_por: enviante, 
+            id_recebido_por: receptor
         });
 
         if (responseEnvio.message && responseEnvio.message.includes('erro')) {
