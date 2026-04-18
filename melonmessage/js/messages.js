@@ -1,4 +1,5 @@
 import {gets, posts} from './calls.js';
+import { selectUser } from './friends.js';
 
 export async function listarmensagens(conversado){
     const meuuser = localStorage.getItem('idUser');
@@ -7,14 +8,14 @@ export async function listarmensagens(conversado){
     
     try{
         if(!meuuser) return;
-        const data = await gets(`/listarmensagens?enviante=${conversado}&user=${meuuser}`);
+        const data = await gets(`/ListMessages?id_recebido_por=${conversado}&id_enviado_por=${meuuser}`);
         campomensagens.replaceChildren();
         if (!data || data.length === 0) {
             console.log('Não há mensagens entre estes utilizadores.');
         } else {
             for(const mensagem of data){
                 let modelo;
-                if(mensagem.receptor == meuuser){
+                if(mensagem.id_recebido_por == meuuser){
                     modelo = document.getElementById('mensagemrecebida')
                 } else {
                     modelo = document.getElementById('mensagemenviada'); 
@@ -30,7 +31,7 @@ export async function listarmensagens(conversado){
                         newmsg.querySelector('.txtenviado');
 
                     if (textoElemento) {
-                        textoElemento.textContent = mensagem.mensagem;
+                        textoElemento.textContent = mensagem.texto_mensagem;
                     }
 
                     campomensagens.appendChild(newmsg);
@@ -73,14 +74,9 @@ export async function enviarMsg(e){
             form.reset();
         } else {
             form.reset();
-            const userData = await gets('/lista?user=' + receptorNome);
-
-            if (userData && userData.length > 0) {
-                const receptorid = userData[0].id;
-                console.log('A chamar listarmensagens para ID:', receptorid);
-                
-                await listarmensagens(receptorid);
-            }
+            
+                await listarmensagens(receptor);
+        
         } 
     } catch (error) {
         console.error('Erro na função enviarMsg:', error);

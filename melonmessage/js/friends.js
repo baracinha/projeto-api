@@ -1,4 +1,5 @@
 import {posts, gets} from './calls.js';
+import { listarmensagens } from './messages.js';
 
 export async function mandarpedidos(e){
         e.preventDefault();
